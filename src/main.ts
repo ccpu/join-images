@@ -87,12 +87,12 @@ export default async function joinImages(
 
     res.push({
       ...data,
-      x: totalX ? totalX + width + offsetY : 0,
-      y: totalY ? totalY + height + offsetX : 0,
+      x: totalX + offsetX,
+      y: totalY + offsetY,
     });
 
-    totalX += width;
-    totalY += height;
+    totalX += width + offsetX;
+    totalY += height + offsetY;
 
     return res;
   }, [] as ImageData[]);

@@ -45,6 +45,16 @@ describe('sharp', () => {
     expect(image instanceof sharp).toBeTruthy();
   }, 100);
 
+  it('should join 3 images', async () => {
+    const imageBuffer3 = fs.readFileSync(fixturePath);
+    const imageBase = await joinImage([
+      imageBuffer,
+      imageBuffer2,
+      imageBuffer3,
+    ]);
+    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+  });
+
   it('should generate vertical image', async () => {
     const imageBase = await joinImage([imageBuffer, imageBuffer2]);
     expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
