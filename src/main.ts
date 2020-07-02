@@ -4,7 +4,7 @@ import sharp from 'sharp';
 import fs from 'fs';
 import isObject from 'is-plain-obj';
 
-interface Options {
+export interface Options {
   direction?: 'vertical' | 'horizontal';
   color?: sharp.Color;
   align?: 'start' | 'center' | 'end' | 'start';
@@ -29,7 +29,7 @@ type InputImage = Buffer | string | ImageSrc;
 
 type ImageSrc = { offsetX?: number; offsetY?: number; src: InputImage };
 
-export default async function joinImages(
+export async function joinImages(
   images: InputImage[],
   {
     direction = 'vertical',
@@ -151,3 +151,5 @@ export default async function joinImages(
 
   return imageBase;
 }
+
+export default joinImages;
