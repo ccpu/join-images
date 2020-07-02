@@ -3,17 +3,7 @@ import calcMargin from './utils/calcMargin';
 import sharp from 'sharp';
 import fs from 'fs';
 import isObject from 'is-plain-obj';
-
-export interface Options {
-  direction?: 'vertical' | 'horizontal';
-  color?: sharp.Color;
-  align?: 'start' | 'center' | 'end' | 'start';
-  offset?: number;
-  margin?:
-    | number
-    | string
-    | { top?: number; left?: number; right?: number; bottom?: number };
-}
+import { Options } from './typings';
 
 interface ImageData {
   buffer: Buffer;
