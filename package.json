@@ -36,10 +36,22 @@
     "lint": "yarn eslint . --ext .ts,.tsx",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "prepublish": "npm run build"
+    "prepublish": "npm run lint && npm run build"
   },
   "author": "m.doaie <mdoaie@yahoo.co.uk>",
   "license": "MIT",
+  "keywords": [
+    "join image",
+    "merge image",
+    "sharp js",
+    "concat",
+    "convert",
+    "compose",
+    "image",
+    "manipulation",
+    "merge",
+    "multiple image"
+  ],
   "dependencies": {
     "is-plain-obj": "^2.1.0",
     "sharp": "^0.25.4"
