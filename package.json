@@ -1,6 +1,6 @@
 {
   "name": "join-images",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Merge multiple images into a single image",
   "engines": {
     "node": ">= 12.13 <13"
@@ -9,6 +9,7 @@
     "type": "git",
     "url": "https://github.com/ccpu/join-images.git"
   },
+  "main": "lib/index.js",
   "devDependencies": {
     "@types/jest": "^26.0.3",
     "@types/jest-image-snapshot": "^3.1.0",
