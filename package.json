@@ -1,9 +1,9 @@
 {
   "name": "join-images",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Merge multiple images into a single image",
   "engines": {
-    "node": ">= 12.13 <13"
+    "node": ">= 12.13"
   },
   "repository": {
     "type": "git",
