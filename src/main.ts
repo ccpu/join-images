@@ -131,8 +131,8 @@ export async function joinImages(
 
       return {
         input: buffer,
-        left: px + left,
-        top: py + top,
+        left: Math.floor(px + left),
+        top: Math.floor(py + top),
       };
     },
   );
