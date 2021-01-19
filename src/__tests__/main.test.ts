@@ -107,4 +107,19 @@ describe('sharp', () => {
     });
     expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
   });
+
+  it('should handle decimal position', async () => {
+    const buffer3x1 = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAMAAAABCAQAAACx6dw/AAAADUlEQVR42mNk+M8ABAAFCQEBRpvUyAAAAABJRU5ErkJggg==',
+      'base64',
+    );
+    const buffer2x1 = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAQAAABeK7cBAAAADUlEQVR42mNk+M/AAAADBwEBPuJ7gwAAAABJRU5ErkJggg==',
+      'base64',
+    );
+    const imageBase = await joinImage([buffer3x1, buffer2x1], {
+      align: 'center',
+    });
+    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+  });
 });

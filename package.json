@@ -1,6 +1,6 @@
 {
   "name": "join-images",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Merge multiple images into a single image",
   "engines": {
     "node": ">= 12.13"
