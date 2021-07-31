@@ -1,6 +1,6 @@
 {
   "name": "join-images",
-  "version": "0.2.6",
+  "version": "0.2.8",
   "description": "Merge multiple images into a single image",
   "engines": {
     "node": ">= 12.13"
@@ -58,6 +58,7 @@
   ],
   "dependencies": {
     "is-plain-obj": "^3.0.0",
-    "sharp": "^0.28.3"
+    "sharp": "^0.28.3",
+    "tslib": "^2.3.0"
   }
 }
