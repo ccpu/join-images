@@ -68,6 +68,14 @@ describe('sharp', () => {
     expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
   });
 
+  it('should handles undefined offset', async () => {
+    const imageBase = await joinImage([
+      { offsetX: 50, src: imageBuffer },
+      { offsetY: 50, src: imageBuffer },
+    ]);
+    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+  });
+
   it('should generate horizontal image', async () => {
     const imageBase = await joinImage([imageBuffer, imageBuffer2], {
       direction: 'horizontal',

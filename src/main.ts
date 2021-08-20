@@ -43,7 +43,7 @@ export async function joinImages(
     let offsetX = 0;
     let offsetY = 0;
     if (isObject(img)) {
-      const { src, offsetX: x, offsetY: y } = img as ImageSrc;
+      const { src, offsetX: x = 0, offsetY: y = 0 } = img as ImageSrc;
       offsetX = +x;
       offsetY = +y;
       imageSrc = src;
