@@ -1,6 +1,6 @@
 {
   "name": "join-images",
-  "version": "0.2.9",
+  "version": "1.0.0",
   "description": "Merge multiple images into a single image",
   "engines": {
     "node": ">= 12.13"
@@ -26,9 +26,10 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-sort-keys-fix": "^1.1.1",
     "jest": "^27.0.3",
-    "jest-image-snapshot": "^4.5.0",
+    "jest-image-snapshot": "^4.5.1",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
+    "sharp": "^0.29.0",
     "ts-jest": "^27.0.1",
     "tsutils": "^3.21.0",
     "typescript": "^4.3.2"
