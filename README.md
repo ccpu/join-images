@@ -12,11 +12,11 @@ Image credit: https://www.pexels.com/
 ## Install
 
 ```bash
-$ npm install join-images
+$ npm install sharp join-images
 ```
 
 ```bash
-$ yarn add join-images
+$ yarn add sharp join-images
 ```
 
 ## Usage
