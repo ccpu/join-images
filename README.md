@@ -21,6 +21,47 @@ $ yarn add sharp join-images
 
 ## Usage
 
+### File paths
+
+```javascript
+const joinImages = require('join-images');
+
+joinImages(['image-1.png', 'image-2.jpg']).then((img) => {
+  img.toFile('out.png');
+});
+```
+
+### Buffers
+
+```javascript
+const fs = require('node:fs');
+const joinImages = require('join-images');
+
+const sources = ['image-1.png', 'image-2.jpg'].map((source) =>
+  fs.readFileSync(source),
+);
+
+joinImages(sources).then((img) => {
+  img.toFile('out.png');
+});
+```
+
+### Object inputs
+
+```javascript
+const fs = require('node:fs');
+const joinImages = require('join-images');
+
+joinImages([
+  { src: fs.readFileSync('image-1.png'), offsetX: 10 },
+  { src: fs.readFileSync('image-2.png'), offsetY: 20 },
+]).then((img) => {
+  img.toFile('out.png');
+});
+```
+
+### Sharp pipelines
+
 ```javascript
 const joinImages = require('join-images');
 const sharp = require('sharp');
@@ -28,7 +69,6 @@ const sharp = require('sharp');
 const sources = ['image-1.png', 'image-2.jpg'];
 
 joinImages(sources.map((source) => sharp(source).trim())).then((img) => {
-  // Save image as file
   img.toFile('out.png');
 });
 ```
