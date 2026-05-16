@@ -1,10 +1,14 @@
-// import sharp from 'sharp';
-import path from 'path';
-import fs from 'fs';
-import joinImage from '../main';
-import { toMatchImageSnapshot } from 'jest-image-snapshot';
+import { Buffer } from 'node:buffer';
+import fs from 'node:fs';
+import path from 'node:path';
 import sharp from 'sharp';
-expect.extend({ toMatchImageSnapshot });
+import { describe, expect, it } from 'vitest';
+import { imageMatcher } from 'vitest-image-snapshot';
+import joinImage from '../main';
+
+imageMatcher();
+
+const snapshotName = (suffix: string) => `main-test-ts-sharp-${suffix}-1-snap`;
 
 describe('sharp', () => {
   const fixturePath = path.join(__dirname, './fixtures/example.png');
@@ -12,9 +16,7 @@ describe('sharp', () => {
   const imageBuffer2 = fs.readFileSync(fixturePath);
 
   it('should throw if input is not array', async () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await expect(joinImage({})).rejects.toThrowError(
+    await expect(joinImage({} as never)).rejects.toThrowError(
       '`images` must be an array that contains images',
     );
   });
@@ -29,12 +31,12 @@ describe('sharp', () => {
     await expect(joinImage([fixturePath, fixturePath])).resolves.toBeDefined();
   }, 100);
 
-  test('returns `Promise` that contains `sharp` object', async () => {
+  it('returns `Promise` that contains `sharp` object', async () => {
     const image = await joinImage([imageBuffer, imageBuffer2]);
     expect(image instanceof sharp).toBeTruthy();
   }, 100);
 
-  test('handles options', async () => {
+  it('handles options', async () => {
     const image = await joinImage([imageBuffer, imageBuffer2], {
       align: 'center',
       color: '#ffffff',
@@ -47,17 +49,17 @@ describe('sharp', () => {
 
   it('should join 3 images', async () => {
     const imageBuffer3 = fs.readFileSync(fixturePath);
-    const imageBase = await joinImage([
-      imageBuffer,
-      imageBuffer2,
-      imageBuffer3,
-    ]);
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    const imageBase = await joinImage([imageBuffer, imageBuffer2, imageBuffer3]);
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('should-join-3-images'),
+    );
   });
 
   it('should generate vertical image', async () => {
     const imageBase = await joinImage([imageBuffer, imageBuffer2]);
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('should-generate-vertical-image'),
+    );
   });
 
   it('should handles offsets per image individually', async () => {
@@ -65,7 +67,9 @@ describe('sharp', () => {
       { offsetX: 10, offsetY: 10, src: imageBuffer },
       { offsetX: 20, offsetY: 50, src: imageBuffer },
     ]);
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('should-handles-offsets-per-image-individually'),
+    );
   });
 
   it('should handles undefined offset', async () => {
@@ -73,35 +77,45 @@ describe('sharp', () => {
       { offsetX: 50, src: imageBuffer },
       { offsetY: 50, src: imageBuffer },
     ]);
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('should-handles-undefined-offset'),
+    );
   });
 
   it('should generate horizontal image', async () => {
     const imageBase = await joinImage([imageBuffer, imageBuffer2], {
       direction: 'horizontal',
     });
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('should-generate-horizontal-image'),
+    );
   });
 
   it('should have offset', async () => {
     const imageBase = await joinImage([imageBuffer, imageBuffer2], {
       offset: 20,
     });
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('should-have-offset'),
+    );
   });
 
   it('handles the image margin with number option', async () => {
     const imageBase = await joinImage([imageBuffer, imageBuffer2], {
       margin: 20,
     });
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('handles-the-image-margin-with-number-option'),
+    );
   });
 
   it('handles the image margin with string option', async () => {
     const imageBase = await joinImage([imageBuffer, imageBuffer2], {
       margin: '40 40 0 10',
     });
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('handles-the-image-margin-with-string-option'),
+    );
   });
 
   it('handles the image margin with object option', async () => {
@@ -113,7 +127,9 @@ describe('sharp', () => {
         top: 40,
       },
     });
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('handles-the-image-margin-with-object-option'),
+    );
   });
 
   it('should handle decimal position', async () => {
@@ -128,6 +144,8 @@ describe('sharp', () => {
     const imageBase = await joinImage([buffer3x1, buffer2x1], {
       align: 'center',
     });
-    expect(await imageBase.png().toBuffer()).toMatchImageSnapshot();
+    await expect(await imageBase.png().toBuffer()).toMatchImage(
+      snapshotName('should-handle-decimal-position'),
+    );
   });
 });

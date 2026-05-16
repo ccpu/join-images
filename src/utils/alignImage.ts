@@ -1,10 +1,15 @@
-// eslint-disable-next-line no-async-promise-executor
-export default function alignImage(total, size, align) {
-  if (align === "center") {
-    return (total - size) / 2;
+export default function alignImage(
+  total: number,
+  size: number,
+  align: 'start' | 'center' | 'end',
+): number {
+  const midpoint = 2;
+
+  if (align === 'center') {
+    return (total - size) / midpoint;
   }
 
-  if (align === "end") {
+  if (align === 'end') {
     return total - size;
   }
 

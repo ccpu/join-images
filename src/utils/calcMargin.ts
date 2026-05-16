@@ -6,7 +6,7 @@ interface Dim {
 }
 
 export default function calcMargin(obj: Dim | string | number = {}): Dim {
-  if (Number.isInteger(obj as number)) {
+  if (Number.isInteger(obj)) {
     return {
       bottom: obj as number,
       left: obj as number,

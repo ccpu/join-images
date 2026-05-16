@@ -1,4 +1,5 @@
-import { Color } from 'sharp';
+import type { Color } from 'sharp';
+
 export interface Options {
   direction?: 'vertical' | 'horizontal';
   color?: Color;

@@ -1,9 +1,11 @@
+import type { Buffer } from 'node:buffer';
+import type { Sharp } from 'sharp';
+import type { Options } from './typings';
+import fs from 'node:fs';
+import isObject from 'is-plain-obj';
+import sharp from 'sharp';
 import alignImage from './utils/alignImage';
 import calcMargin from './utils/calcMargin';
-import sharp from 'sharp';
-import fs from 'fs';
-import isObject from 'is-plain-obj';
-import { Options } from './typings';
 
 interface ImageData {
   buffer: Buffer;
@@ -17,7 +19,11 @@ interface ImageData {
 
 type InputImage = Buffer | string | ImageSrc;
 
-type ImageSrc = { offsetX?: number; offsetY?: number; src: InputImage };
+interface ImageSrc {
+  offsetX?: number;
+  offsetY?: number;
+  src: InputImage;
+}
 
 export async function joinImages(
   images: InputImage[],
@@ -28,7 +34,7 @@ export async function joinImages(
     offset = 0,
     margin,
   }: Options = {},
-) {
+): Promise<Sharp> {
   if (!Array.isArray(images)) {
     throw new TypeError('`images` must be an array that contains images');
   }
@@ -44,8 +50,8 @@ export async function joinImages(
     let offsetY = 0;
     if (isObject(img)) {
       const { src, offsetX: x = 0, offsetY: y = 0 } = img as ImageSrc;
-      offsetX = +x;
-      offsetY = +y;
+      offsetX = Number(x);
+      offsetY = Number(y);
       imageSrc = src;
     }
 
@@ -55,9 +61,7 @@ export async function joinImages(
 
     return {
       buffer:
-        typeof imageSrc === 'string'
-          ? fs.readFileSync(imageSrc)
-          : (imageSrc as Buffer),
+        typeof imageSrc === 'string' ? fs.readFileSync(imageSrc) : (imageSrc as Buffer),
       height,
       offsetX,
       offsetY,
@@ -72,7 +76,7 @@ export async function joinImages(
   let totalX = 0;
   let totalY = 0;
 
-  const imgData = imgs.reduce((res, data) => {
+  const imageData = imgs.reduce((res, data) => {
     const { width, height, offsetY, offsetX } = data;
 
     res.push({
@@ -87,55 +91,50 @@ export async function joinImages(
     return res;
   }, [] as ImageData[]);
 
-  const { top, right, bottom, left } = calcMargin(margin);
+  const { top = 0, right = 0, bottom = 0, left = 0 } = calcMargin(margin);
   const marginTopBottom = top + bottom;
   const marginRightLeft = right + left;
 
   const isVertical = direction === 'vertical';
 
   const totalWidth = isVertical
-    ? Math.max(...imgData.map(({ width, offsetX }) => width + offsetX))
-    : imgData.reduce(
+    ? Math.max(...imageData.map(({ width, offsetX }) => width + offsetX))
+    : imageData.reduce(
         (res, { width, offsetX }, index) =>
           res + width + offsetX + Number(index > 0) * offset,
         0,
       );
 
   const totalHeight = isVertical
-    ? imgData.reduce(
+    ? imageData.reduce(
         (res, { height, offsetY }, index) =>
           res + height + offsetY + Number(index > 0) * offset,
         0,
       )
-    : Math.max(...imgData.map(({ height, offsetY }) => height + offsetY));
+    : Math.max(...imageData.map(({ height, offsetY }) => height + offsetY));
 
   const imageBase = sharp({
     create: {
-      background: color as sharp.Color,
+      background: color,
       channels: 4,
       height: totalHeight + marginTopBottom,
       width: totalWidth + marginRightLeft,
     },
   });
 
-  const compositeData: sharp.OverlayOptions[] = imgData.map(
-    (imgData, index) => {
-      const { buffer, x, y, offsetX, offsetY, width, height } = imgData;
+  const compositeData: sharp.OverlayOptions[] = imageData.map((image, index) => {
+    const { buffer, x, y, offsetX, offsetY, width, height } = image;
 
-      const [px, py] = isVertical
-        ? [alignImage(totalWidth, width, align) + offsetX, y + index * offset]
-        : [
-            x + index * offset,
-            alignImage(totalHeight, height, align) + offsetY,
-          ];
+    const [px, py] = isVertical
+      ? [alignImage(totalWidth, width, align) + offsetX, y + index * offset]
+      : [x + index * offset, alignImage(totalHeight, height, align) + offsetY];
 
-      return {
-        input: buffer,
-        left: Math.floor(px + left),
-        top: Math.floor(py + top),
-      };
-    },
-  );
+    return {
+      input: buffer,
+      left: Math.floor(px + left),
+      top: Math.floor(py + top),
+    };
+  });
 
   imageBase.composite(compositeData);
 

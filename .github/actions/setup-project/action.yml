@@ -1,0 +1,63 @@
+name: Setup project
+description: 'Setup Node.js, install pnpm, install dependencies, and build the project'
+
+inputs:
+  node-version-file:
+    description: Node.js version file to use
+    required: false
+    default: .node-version
+
+  node-version:
+    description: Node.js version to use
+    required: false
+
+  pnpm-version:
+    description: pnpm version to use
+    required: false
+
+  registry-url:
+    description: npm registry URL
+    required: false
+
+  build:
+    description: Whether to build the project
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      if: ${{ inputs.pnpm-version != '' }}
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - name: Install pnpm (without version)
+      uses: pnpm/action-setup@v4
+      if: ${{ inputs.pnpm-version == '' }}
+
+    - name: Setup Node.js with explicit version
+      if: ${{ inputs.node-version != '' }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+        registry-url: ${{ inputs.registry-url }}
+
+    - name: Setup Node.js from version file
+      if: ${{ inputs.node-version == '' }}
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ${{ inputs.node-version-file }}
+        cache: pnpm
+        registry-url: ${{ inputs.registry-url }}
+
+    - name: Install dependencies
+      run: pnpm install
+      shell: bash
+
+    - name: Build project
+      if: ${{ inputs.build == 'true' }}
+      run: pnpm run build
+      shell: bash
