@@ -1,5 +1,11 @@
 # join-images
 
+## 1.4.0
+
+### Minor Changes
+
+- change access level from restricted to public
+
 ## 1.3.0
 
 ### Minor Changes
