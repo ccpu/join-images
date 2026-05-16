@@ -37,9 +37,7 @@ joinImages(['image-1.png', 'image-2.jpg']).then((img) => {
 const fs = require('node:fs');
 const joinImages = require('join-images');
 
-const sources = ['image-1.png', 'image-2.jpg'].map((source) =>
-  fs.readFileSync(source),
-);
+const sources = ['image-1.png', 'image-2.jpg'].map((source) => fs.readFileSync(source));
 
 joinImages(sources).then((img) => {
   img.toFile('out.png');
