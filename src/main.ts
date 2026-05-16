@@ -1,7 +1,6 @@
 import type { Buffer } from 'node:buffer';
 import type { Sharp } from 'sharp';
 import type { Options } from './typings';
-import fs from 'node:fs';
 import isObject from 'is-plain-obj';
 import sharp from 'sharp';
 import alignImage from './utils/alignImage';
@@ -17,12 +16,23 @@ interface ImageData {
   y: number;
 }
 
-type InputImage = Buffer | string | ImageSrc;
+type InputSource = Buffer | string | Sharp;
+
+type InputImage = InputSource | ImageSrc;
 
 interface ImageSrc {
   offsetX?: number;
   offsetY?: number;
-  src: InputImage;
+  src: InputSource;
+}
+
+function isSharpInstance(value: InputImage): value is Sharp {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as Sharp).clone === 'function' &&
+    typeof (value as Sharp).toBuffer === 'function'
+  );
 }
 
 export async function joinImages(
@@ -44,24 +54,23 @@ export async function joinImages(
   }
 
   const processImg = async (img: InputImage): Promise<ImageData> => {
-    let imageSrc = img;
+    const {
+      offsetX = 0,
+      offsetY = 0,
+      src,
+    } = isObject(img)
+      ? (img as ImageSrc)
+      : { offsetX: 0, offsetY: 0, src: img as InputSource };
+    const imageSrc: InputSource = src;
 
-    let offsetX = 0;
-    let offsetY = 0;
-    if (isObject(img)) {
-      const { src, offsetX: x = 0, offsetY: y = 0 } = img as ImageSrc;
-      offsetX = Number(x);
-      offsetY = Number(y);
-      imageSrc = src;
-    }
+    const { data: buffer, info } = isSharpInstance(imageSrc)
+      ? await imageSrc.clone().toBuffer({ resolveWithObject: true })
+      : await sharp(imageSrc).toBuffer({ resolveWithObject: true });
 
-    const meta = await sharp(imageSrc as string | Buffer).metadata();
-
-    const { width, height } = meta;
+    const { width = 0, height = 0 } = info;
 
     return {
-      buffer:
-        typeof imageSrc === 'string' ? fs.readFileSync(imageSrc) : (imageSrc as Buffer),
+      buffer,
       height,
       offsetX,
       offsetY,

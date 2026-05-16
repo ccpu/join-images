@@ -22,9 +22,12 @@ $ yarn add sharp join-images
 ## Usage
 
 ```javascript
-import joinImages from 'join-images';
+const joinImages = require('join-images');
+const sharp = require('sharp');
 
-joinImages(['image-1.png', 'image-2.jpg']).then((img) => {
+const sources = ['image-1.png', 'image-2.jpg'];
+
+joinImages(sources.map((source) => sharp(source).trim())).then((img) => {
   // Save image as file
   img.toFile('out.png');
 });
@@ -34,7 +37,7 @@ joinImages(['image-1.png', 'image-2.jpg']).then((img) => {
 
 ### joinImages(images[, options])
 
-- `images` Array of (String | Object | Buffer) - List of images to concat. If `String` is passed, it will be considered to the file path. An `Object` entry can have following options:
+- `images` Array of (String | Object | Buffer | Sharp) - List of images to concat. If `String` is passed, it will be considered to the file path. If `Sharp` is passed, the rendered output of that sharp pipeline is used. An `Object` entry can have following options:
   - `src` _`String`_ or `Buffer` - A single image source to concat.
   - `offsetX` Number (optional) - `x` offset to affect this image. Default is `0`.
   - `offsetY` Number (optional) - `y` offset to affect this image. Default is `0`.

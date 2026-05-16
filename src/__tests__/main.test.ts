@@ -31,6 +31,18 @@ describe('sharp', () => {
     await expect(joinImage([fixturePath, fixturePath])).resolves.toBeDefined();
   }, 100);
 
+  it('accepts sharp pipeline objects', async () => {
+    const imageBase = await joinImage([
+      sharp(imageBuffer).resize(24, 24),
+      sharp(imageBuffer2).resize(24, 24),
+    ]);
+
+    const { info } = await imageBase.png().toBuffer({ resolveWithObject: true });
+
+    expect(info.width).toBe(24);
+    expect(info.height).toBe(48);
+  }, 100);
+
   it('returns `Promise` that contains `sharp` object', async () => {
     const image = await joinImage([imageBuffer, imageBuffer2]);
     expect(image instanceof sharp).toBeTruthy();
