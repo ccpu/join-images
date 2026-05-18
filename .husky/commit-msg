@@ -1,1 +1,6 @@
+# commit-msg
+if [ -n "$CI" ]; then
+    exit 0
+fi
+
 pnpm exec commitlint --edit "$1"
