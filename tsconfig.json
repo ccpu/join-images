@@ -23,6 +23,6 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "**/__tests__/*", "vitest.config.ts"],
+  "include": ["src/**/*", "**/__tests__/*", "tsup.config.ts", "vitest.config.ts"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }
